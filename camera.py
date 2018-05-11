@@ -1,9 +1,35 @@
 from picamera import PiCamera
 from PIL import Image
 from time import sleep
-import math
+
+class BoothCamera(object):
+    countdown = ['three.jpg', 'two.jpg', 'one.jpg']
+    
+    def __init__(self, window = None):
+        # The portion of screen the camera will be drawn
+        # (x,y,width,height)
+        # If None, indicates fullscreen
+        self.window = window
+        self.camera = PiCamera()
+
+    def __startPreview():
+        if self.pos == None: camera.start_preview()
+        else: self.start_preview(fullscreen = false
+                                 window = self.pos)
+
+    def takePicture():
+        self.__startPreview()
+        
+
+    def __centerOf(box):
+        w, h = box
+        return int(w / 2), int(h / 2)
+    
+
+    
 
 
+        
 camera = PiCamera()
 
 countdown = ['three.jpg', 'two.jpg', 'one.jpg']
@@ -49,12 +75,11 @@ def displayCountdown():
     removeOverlay(prevO)
 
 
-def main():
+def takePicture():
     camera.start_preview()
     displayCountdown()
     camera.capture('/home/pi/Desktop/image.jpg',use_video_port=True)
     camera.stop_preview()
     
-    
 
-main()
+
