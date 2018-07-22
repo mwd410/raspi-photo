@@ -2,37 +2,10 @@ from picamera import PiCamera
 from PIL import Image
 from time import sleep
 
-class BoothCamera(object):
-    countdown = ['three.jpg', 'two.jpg', 'one.jpg']
-    
-    def __init__(self, window = None):
-        # The portion of screen the camera will be drawn
-        # (x,y,width,height)
-        # If None, indicates fullscreen
-        self.window = window
-        self.camera = PiCamera()
-
-    def __startPreview():
-        if self.pos == None: camera.start_preview()
-        else: self.start_preview(fullscreen = false
-                                 window = self.pos)
-
-    def takePicture():
-        self.__startPreview()
         
+#camera = PiCamera()
 
-    def __centerOf(box):
-        w, h = box
-        return int(w / 2), int(h / 2)
-    
-
-    
-
-
-        
-camera = PiCamera()
-
-countdown = ['three.jpg', 'two.jpg', 'one.jpg']
+#countdown = ['three.jpg', 'two.jpg', 'one.jpg']
 
 def findCenter(box):
     w, h = box
