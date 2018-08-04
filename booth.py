@@ -51,22 +51,34 @@ class PhotoBooth(Frame):
         self.btnNo.pack(side='right', ipady=50, ipadx=50, pady=25, padx=25)
         self.btnYes.pack(side='right', ipady=50, ipadx=50, pady=25, padx=25)
         yesNoFrame.pack(side='bottom', fill='x')
+        
+        beginFrame = Frame(self)
+        self.btnBegin = Button(beginFrame,
+            text = 'Begin',
+            command = self.begin
+        )
+        beginFrame.pack()
+        self.btnBegin.pack(ipady=20, ipadx=20, pady=20, padx=20)
+    
+    def begin(self):
+        self.btnBegin['state'] = 'disabled'
+        self.startPreview()
     
     def __hideConfirm(self):
+        self.startPreview()
         self.camera.hideConfirm()
         self.btnYes['state'] = 'disabled'
         self.btnNo['state'] = 'disabled'
         self.confirmPath = None
-        self.startPreview()
     
     
     def __showConfirm(self, path):
-        self.stopPreview()
         try: 
             self.camera.showConfirm(path, 
                 btnBox(self.btnYes), 
                 btnBox(self.btnNo)
             )
+            self.stopPreview()
         except Exception as e:
             log.error("Error when showing confirm", e)
         self.btnYes['state'] = 'normal'
@@ -100,7 +112,8 @@ class PhotoBooth(Frame):
         self.btnTakePicture['state'] = 'disabled'
         
     def __showPrompt(self):
-        self.camera.showPrompt()
+        log.info(btnBox(self.btnTakePicture))
+        self.camera.showPrompt(btnBox(self.btnTakePicture))
         self.btnTakePicture['state'] = 'normal'
 
     def takePicture(self):
@@ -116,7 +129,10 @@ class PhotoBooth(Frame):
 
     def shutdown(self, e):
         log.info("Shutting down")
-        self.master.destroy()
+        if self.btnBegin['state'] == 'disabled':
+            self.btnBegin['state'] = 'normal'
+            self.stopPreview()
+        else: self.master.destroy()
 
     @staticmethod
     def imagePath():

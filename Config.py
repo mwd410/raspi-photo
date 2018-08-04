@@ -10,7 +10,7 @@ class Config(object):
     
     @staticmethod
     def testMode(): 
-        return 'True' == Config.env('TEST_MODE', 'False')
+        return 'True' == Config.env('TEST_MODE', 'Truex')
     
     # TODO: Add Log.levelFromName
     @staticmethod

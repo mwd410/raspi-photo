@@ -1,6 +1,9 @@
 from booth import *
 from Config import Config
 from Log import Log
+import time
+from sched import scheduler
+s = scheduler(time.time, time.sleep)
 
 log = Log("App")
 
@@ -8,7 +11,8 @@ class App(object):
     def __init__(self):
         root = self.setupScreen()
         app = PhotoBooth(root)
-        app.startPreview()
+        #~ app.startPreview()
+        #~ s.enter(10, 1, app.startPreview, ())
         root.mainloop()
 
     def setupScreen(self):

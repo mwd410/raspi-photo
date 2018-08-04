@@ -67,6 +67,7 @@ class BoothCamera(object):
         self.previewing = False
         self.prompting = False
         self.confirming = False
+        self.promptOverlay = None
         self.confirmOverlay = None
         self.yesOverlay = None
         self.noOverlay = None
@@ -89,11 +90,14 @@ class BoothCamera(object):
             log.error("Error when stopping preview", e)
         self.previewing = False
     
-    def showPrompt(self):
+    def showPrompt(self, btnBox):
         if (self.prompting):
             log.warn("Tried to show prompt againt")
             return
-        log.debug("Showing Prompt")
+        log.debug("Showing Prompt at {0}".format(btnBox))
+        self.promptOverlay = self.addOverlay(
+            btnOverlay(BoothCamera.CAMERA, self.window, btnBox)
+        )
         self.prompting = True
     
     def hidePrompt(self):
@@ -101,6 +105,7 @@ class BoothCamera(object):
             log.warn("Tried to hide prompt again")
             return
         log.debug("Hiding Prompt")
+        self.removeOverlay(self.promptOverlay)
         self.prompting = False
     
     
