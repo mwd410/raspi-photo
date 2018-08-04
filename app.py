@@ -14,7 +14,7 @@ class App(object):
         #~ app.startPreview()
         #~ s.enter(10, 1, app.startPreview, ())
         root.mainloop()
-
+        
     def setupScreen(self):
         root = Tk()
         #~ master.geometry("{0}x{1}".format(

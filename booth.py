@@ -6,6 +6,9 @@ from Log import Log
 
 log = Log('PhotoBooth')
 
+color_PhotoFrame='red'
+color_ConfirmFrame='green'
+
 def btnBox(btn):
     return btn.winfo_rootx(), btn.winfo_rooty(), btn.winfo_width(), btn.winfo_height()
 
@@ -24,12 +27,12 @@ class PhotoBooth(Frame):
         self.pack(fill='both', expand=1)
         # Prompt Frame
         promptFrame = Frame(self,
-            background = 'red')
+            background = color_PhotoFrame)
         promptFrame.pack(side='right', fill='y')
         # Take Picture Button
         btnTakePicture = Button(
             promptFrame,
-            text = 'hello',
+            #~ text = 'hello',
             command = self.takePicture,
             state = 'disabled'
         )
@@ -37,28 +40,42 @@ class PhotoBooth(Frame):
         self.btnTakePicture = btnTakePicture
         # Yes/No frame
         yesNoFrame = Frame(self,
-            background = 'green')
+            background = color_ConfirmFrame)
         self.btnYes = Button(yesNoFrame,
-            text = 'Yes',
+            #~ text = 'Yes',
             command = self.confirm,
             state = 'disabled'
+            #~ ,width = 25, height = 25
         )
         self.btnNo = Button(yesNoFrame,
-            text = 'No',
+            #~ text = 'No',
             command = self.reject,
             state = 'disabled'
+            #~ ,width = 25, height = 25
         )
-        self.btnNo.pack(side='right', ipady=50, ipadx=50, pady=25, padx=25)
-        self.btnYes.pack(side='right', ipady=50, ipadx=50, pady=25, padx=25)
+        self.btnNo.pack_propagate(0)
+        self.btnYes.pack_propagate(0)
+        #~ self.btnNo.pack(side='right')
+        #~ self.btnYes.pack(side='right')
+        self.btnNo.pack(side='right', ipady=50, ipadx=50, pady=25, padx=25, anchor='center')
+        self.btnYes.pack(side='right', ipady=50, ipadx=50, pady=25, padx=25, anchor='center')
         yesNoFrame.pack(side='bottom', fill='x')
         
-        beginFrame = Frame(self)
+        beginFrame = Frame(self, background='white')
         self.btnBegin = Button(beginFrame,
             text = 'Begin',
             command = self.begin
         )
-        beginFrame.pack()
-        self.btnBegin.pack(ipady=20, ipadx=20, pady=20, padx=20)
+        testModeVar = StringVar()
+        testModeVar.set(0)
+        self.modeCheckbox = Checkbutton(beginFrame,
+            text = 'Test Mode',
+            variable = testModeVar
+        )
+        Config.setTestMode(testModeVar)
+        self.modeCheckbox.pack(side='right', ipady=20, ipadx=20)
+        self.btnBegin.pack(side='right', ipady=20, ipadx=20, pady=20, padx=20)
+        beginFrame.pack(side='top', fill='both', expand=1)
     
     def begin(self):
         self.btnBegin['state'] = 'disabled'
@@ -119,7 +136,7 @@ class PhotoBooth(Frame):
     def takePicture(self):
         path = self.imagePath()
         self.__hidePrompt()
-        self.camera.takePicture(path)
+        self.camera.takePicture(path, btnBox(self.btnTakePicture))
         self.__showConfirm(path)
     
         

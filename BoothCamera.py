@@ -136,12 +136,12 @@ class BoothCamera(object):
         self.removeOverlay(self.yesOverlay)
         self.removeOverlay(self.noOverlay)
 
-    def takePicture(self, imagePath):
+    def takePicture(self, imagePath, numBox):
         if not self.previewing:
             log.warn("Tried taking a picture without previewing") 
             return
         try:
-            self.__displayCountdown()
+            self.__displayCountdown(numBox)
             self.camera.capture(imagePath, use_video_port=True)
         except Exception as e:
             log.error("Error when taking picture", e)
@@ -149,11 +149,12 @@ class BoothCamera(object):
     def __capture(self, imagePath):
         self.camera.capture(imagePath, use_video_port=True)
 
-    def __displayCountdown(self):
+    def __displayCountdown(self, numBox):
         prevOverlay = None
         try:
             for filename in BoothCamera.countdown:
-                img = self.__getCountdownImage(filename)
+                #~ img = self.__getCountdownImage(filename)
+                img = btnOverlay(filename, self.window, numBox)
                 overlay = self.addOverlay(img)
                 self.removeOverlay(prevOverlay)
                 prevOverlay = overlay
