@@ -11,6 +11,20 @@ s = scheduler(time, sleep)
 
 log = Log('BoothCamera')
 
+def vecSum(A, B):
+    if len(A) != len(B):
+        raise Exception("{0} has a different length from {1}".format(A, B))
+    v = []
+    for i in range(0, len(A)):
+        v.append(A[i] + B[i])
+    return tuple(v)
+
+def vecMult(vec, scale): 
+    v = []
+    for i in range(0, len(vec)):
+        v.append(int(round(vec[i] * scale)))
+    return tuple(v)
+
 def findCenter(box):
     w, h = box
     return int(w / 2), int(h / 2)
@@ -20,28 +34,29 @@ def centerWithin(box, within):
     inX, inY = findCenter(within)
     return inX - boxX, inY - boxY
 
-def centerOn(img, on, offset=(0,0)):
-    pad = Image.new('RGBA', on, (0, 0, 0, 0))
-    center = centerWithin(img.size, on)
-    #~ ox,oy = offset
-    #~ center = cx+ox, cy+oy
-    pad.paste(img, center)
-    log.trace(center)
+# size = final size of new image, everything outside img is transparent
+# coord = coordinate on screen where to paste the image
+# offset = either (x,y) from top-left of img, or None which will center it
+def padImage(img, size, coord, offset=None):
+    if offset == None:
+        offset = centerWithin(img.size, (0,0))
+    # New image all transparent
+    pad = Image.new('RGBA', size, (0, 0, 0, 0))
+    pad.paste(img, vecSum(coord, offset))
     return pad
 
-def scaleSize(size, scale): 
-    w,h = size
-    return int(round(w * scale)), int(round(h * scale))
-
-def btnOverlay(imagePath, size, offset=None):
+# Either (path, (x,y,w,h))
+# or (path, (w,h), (x,y))
+def btnOverlay(imagePath, window, size, offset=None):
     if offset == None:
         x,y,w,h = size
         size = w,h
         offset = x,y
     img = Image.open(imagePath).resize(size)
-    return centerOn(img, size, offset)
+    return padImage(img, window, offset, (0, 0))
 
 class BoothCamera(object):
+    CAMERA = 'device-camera-icon.png'
     yes = "Yes.png"
     no = "No.png"
     countdown = ['three.jpg', 'two.jpg', 'one.jpg']
@@ -85,6 +100,7 @@ class BoothCamera(object):
         if not self.prompting:
             log.warn("Tried to hide prompt again")
             return
+        log.debug("Hiding Prompt")
         self.prompting = False
     
     
@@ -93,19 +109,17 @@ class BoothCamera(object):
             log.warn("Tried to show confirm again")
             return
         if Config.testMode():
-            size = scaleSize(self.window, 0.3)
+            size = vecMult(self.window, 0.3)
         else: size = self.window
         log.info(size)
         img = Image.open(imagePath).resize(size)
         self.confirmOverlay = self.addOverlay(
-            centerOn(img, self.window)
+            padImage(img, self.window, (0,0), (0,0))
         )
-        #~ self.yesOverlay = self.addOverlay(
-            #~ btnOverlay(BoothCamera.yes, yesBox)
-        #~ )
-        #~ self.noOverlay = self.addOverlay(
-            #~ btnOverlay(BoothCamera.no, noBox)
-        #~ )
+        yesO = btnOverlay(BoothCamera.yes, self.window, yesBox)
+        noO = btnOverlay(BoothCamera.no, self.window, noBox)
+        self.yesOverlay = self.addOverlay(yesO)
+        self.noOverlay = self.addOverlay(noO)
         self.confirming = True
     
     def hideConfirm(self):
@@ -143,7 +157,8 @@ class BoothCamera(object):
 
     def __getCountdownImage(self, filename, size = (128, 128)):
         img = Image.open(filename).resize(size)
-        return centerOn(img, self.window)
+        log.info('{0} {1}'.format(self.window, findCenter(self.window)))
+        return padImage(img, self.window, findCenter(self.window))
 
     def addOverlay(self, img):
         o = self.camera.add_overlay(
