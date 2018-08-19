@@ -13,12 +13,13 @@ def btnBox(btn):
     return btn.winfo_rootx(), btn.winfo_rooty(), btn.winfo_width(), btn.winfo_height()
 
 class PhotoBooth(Frame):
-    def __init__(self, master):
+    def __init__(self, master, upload):
         Frame.__init__(self, master)
         self.camera = BoothCamera(
             (master.winfo_screenwidth(),
              master.winfo_screenheight())
         )
+        self.upload = upload
         self.addWidgets()
         self.bindEvents()
         self.confirmPath = None
@@ -60,7 +61,7 @@ class PhotoBooth(Frame):
         self.btnNo.pack(side='right', ipady=50, ipadx=50, pady=25, padx=25, anchor='center')
         self.btnYes.pack(side='right', ipady=50, ipadx=50, pady=25, padx=25, anchor='center')
         yesNoFrame.pack(side='bottom', fill='x')
-        
+
         beginFrame = Frame(self, background='white')
         self.btnBegin = Button(beginFrame,
             text = 'Begin',
@@ -76,23 +77,23 @@ class PhotoBooth(Frame):
         self.modeCheckbox.pack(side='right', ipady=20, ipadx=20)
         self.btnBegin.pack(side='right', ipady=20, ipadx=20, pady=20, padx=20)
         beginFrame.pack(side='top', fill='both', expand=1)
-    
+
     def begin(self):
         self.btnBegin['state'] = 'disabled'
         self.startPreview()
-    
+
     def __hideConfirm(self):
         self.startPreview()
         self.camera.hideConfirm()
         self.btnYes['state'] = 'disabled'
         self.btnNo['state'] = 'disabled'
         self.confirmPath = None
-    
-    
+
+
     def __showConfirm(self, path):
-        try: 
-            self.camera.showConfirm(path, 
-                btnBox(self.btnYes), 
+        try:
+            self.camera.showConfirm(path,
+                btnBox(self.btnYes),
                 btnBox(self.btnNo)
             )
             self.stopPreview()
@@ -101,33 +102,33 @@ class PhotoBooth(Frame):
         self.btnYes['state'] = 'normal'
         self.btnNo['state'] = 'normal'
         self.confirmPath = path
-    
+
     def confirm(self):
         if self.confirmPath == None:
             log.warn("Nothing to confirm")
             return
         self.__hideConfirm()
         log.info("Confirmed picture")
-    
+
     def reject(self):
         if self.confirmPath == None:
             log.warn("Nothing to reject")
             return
         self.__hideConfirm()
         log.info("Rejected picture")
-    
+
     def startPreview(self):
         self.camera.startPreview()
         self.__showPrompt()
-    
+
     def stopPreview(self):
         self.camera.stopPreview()
         self.__hidePrompt()
-    
+
     def __hidePrompt(self):
         self.camera.hidePrompt()
         self.btnTakePicture['state'] = 'disabled'
-        
+
     def __showPrompt(self):
         log.info(btnBox(self.btnTakePicture))
         self.camera.showPrompt(btnBox(self.btnTakePicture))
@@ -138,8 +139,8 @@ class PhotoBooth(Frame):
         self.__hidePrompt()
         self.camera.takePicture(path, btnBox(self.btnTakePicture))
         self.__showConfirm(path)
-    
-        
+
+
     def bindEvents(self):
         master = self.master
         master.bind('<Escape>', self.shutdown)
@@ -156,6 +157,6 @@ class PhotoBooth(Frame):
         directory = Config.env('PHOTO_BOOTH_DIR', '/home/pi/Pictures')
         now = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
         return directory + '/photo-' + now + '.jpg'
-        
+
 
 
