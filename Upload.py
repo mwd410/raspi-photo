@@ -18,8 +18,6 @@ class Upload(object):
     def __init__(self, clientId, secret):
         self.clientId = clientId
         self.secret = secret
-        self.email = None
-        self.password = None
         self.folderId = None
 
     def upload(self, img):
@@ -62,16 +60,6 @@ class Upload(object):
                                            fields='id').execute()
         log.info("Uploaded {} to {}".format(filePath, file_metadata))
         return file
-
-    # This is a seriously awful place for this...
-    def promptForAccount(self):
-        email = raw_input('Email: ')
-        password = getpass('Password: ')
-        self.setAccount(email, password)
-
-    def setAccount(self, email, password):
-        self.email = email
-        self.password = password
 
     @staticmethod
     def getInstance():
