@@ -1,1 +1,6 @@
 *.pyc
+client_secret.json
+ggl_client_id
+ggl_secret
+token.json
+*.swp

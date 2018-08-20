@@ -12,9 +12,13 @@ log = Log("App")
 
 class App(object):
     def __init__(self):
-        root = self.setupScreen()
         upload = Upload.getInstance()
-        upload.promptForAccount()
+        upload.login()
+        folder = upload.findByName(raw_input('Folder: '))
+        if not folder:
+            raise Exception("Folder not found")
+        upload.setFolder(folder['id'])
+        root = self.setupScreen()
         app = PhotoBooth(root, upload)
         #~ app.startPreview()
         #~ s.enter(10, 1, app.startPreview, ())

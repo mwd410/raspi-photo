@@ -107,6 +107,8 @@ class PhotoBooth(Frame):
         if self.confirmPath == None:
             log.warn("Nothing to confirm")
             return
+        file = self.upload.uploadFile(self.confirmPath)
+        log.info(file)
         self.__hideConfirm()
         log.info("Confirmed picture")
 

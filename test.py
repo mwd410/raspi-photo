@@ -10,7 +10,8 @@ upload = Upload.getInstance()
 print("logging in...")
 upload.login()
 
-print("Listing photos")
-items = upload.listPhotos()
-print(items)
+#upload.uploadFile(raw_input('file path:'))
+
+folder = upload.findByName(raw_input('folder name: '))
+print(folder)
 
