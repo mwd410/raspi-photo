@@ -19,7 +19,7 @@ def vecSum(A, B):
         v.append(A[i] + B[i])
     return tuple(v)
 
-def vecMult(vec, scale): 
+def vecMult(vec, scale):
     v = []
     for i in range(0, len(vec)):
         v.append(int(round(vec[i] * scale)))
@@ -57,9 +57,9 @@ def btnOverlay(imagePath, window, size, offset=None):
 
 class BoothCamera(object):
     CAMERA = 'device-camera-icon.png'
-    yes = "Yes.png"
-    no = "No.png"
-    countdown = ['three.jpg', 'two.jpg', 'one.jpg']
+    yes = "Save.png"
+    no = "Retry.png"
+    countdown = ['Five.png', 'Four.png', 'Three.png', 'Two.png', 'One.png']
 
     def __init__(self, window):
         self.window = window
@@ -77,7 +77,7 @@ class BoothCamera(object):
         try:
             if not Config.testMode():
                 self.camera.start_preview(fullscreen = True)
-        except Exception as e: 
+        except Exception as e:
             log.error("Error when starting preview", e)
         self.previewing = True
 
@@ -86,10 +86,10 @@ class BoothCamera(object):
         try:
             if not Config.testMode():
                 self.camera.stop_preview()
-        except Exception as e: 
+        except Exception as e:
             log.error("Error when stopping preview", e)
         self.previewing = False
-    
+
     def showPrompt(self, btnBox):
         if (self.prompting):
             log.warn("Tried to show prompt againt")
@@ -99,7 +99,7 @@ class BoothCamera(object):
             btnOverlay(BoothCamera.CAMERA, self.window, btnBox)
         )
         self.prompting = True
-    
+
     def hidePrompt(self):
         if not self.prompting:
             log.warn("Tried to hide prompt again")
@@ -107,8 +107,8 @@ class BoothCamera(object):
         log.debug("Hiding Prompt")
         self.removeOverlay(self.promptOverlay)
         self.prompting = False
-    
-    
+
+
     def showConfirm(self, imagePath, yesBox, noBox):
         if self.confirming:
             log.warn("Tried to show confirm again")
@@ -126,7 +126,7 @@ class BoothCamera(object):
         self.yesOverlay = self.addOverlay(yesO)
         self.noOverlay = self.addOverlay(noO)
         self.confirming = True
-    
+
     def hideConfirm(self):
         if not self.confirming:
             log.warn("Tried to hide confirm again")
@@ -138,14 +138,14 @@ class BoothCamera(object):
 
     def takePicture(self, imagePath, numBox):
         if not self.previewing:
-            log.warn("Tried taking a picture without previewing") 
+            log.warn("Tried taking a picture without previewing")
             return
         try:
             self.__displayCountdown(numBox)
             self.camera.capture(imagePath, use_video_port=True)
         except Exception as e:
             log.error("Error when taking picture", e)
-    
+
     def __capture(self, imagePath):
         self.camera.capture(imagePath, use_video_port=True)
 
