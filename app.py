@@ -15,11 +15,12 @@ class App(object):
         upload = Upload.getInstance()
         upload.login()
         folder = upload.findByName(raw_input('Folder: '))
+        self.folder = folder
         if not folder:
             raise Exception("Folder not found")
         upload.setFolder(folder['id'])
         root = self.setupScreen()
-        app = PhotoBooth(root, upload)
+        app = PhotoBooth(root, folder)
         #~ app.startPreview()
         #~ s.enter(10, 1, app.startPreview, ())
         root.mainloop()

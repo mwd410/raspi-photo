@@ -34,7 +34,7 @@ class Upload(object):
 
     def list(self):
         results = self.service.files().list(
-            pageSize=100, fields='nextPageToken, files(id, name)').execute()
+            pageSize=1000, fields='nextPageToken, files(id, name)').execute()
         log.info(results)
         items = results.get('files', [])
         return items

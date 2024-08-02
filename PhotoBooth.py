@@ -2,6 +2,7 @@ from Tkinter import *
 from BoothCamera import BoothCamera
 from datetime import datetime
 from Config import Config
+from Upload import Upload
 from Log import Log
 
 log = Log('PhotoBooth')
@@ -13,13 +14,13 @@ def btnBox(btn):
     return btn.winfo_rootx(), btn.winfo_rooty(), btn.winfo_width(), btn.winfo_height()
 
 class PhotoBooth(Frame):
-    def __init__(self, master, upload):
+    def __init__(self, master, folder):
         Frame.__init__(self, master)
         self.camera = BoothCamera(
             (master.winfo_screenwidth(),
              master.winfo_screenheight())
         )
-        self.upload = upload
+        self.folder = folder
         self.addWidgets()
         self.bindEvents()
         self.confirmPath = None
@@ -107,7 +108,10 @@ class PhotoBooth(Frame):
         if self.confirmPath == None:
             log.warn("Nothing to confirm")
             return
-        file = self.upload.uploadFile(self.confirmPath)
+        upload = Upload.getInstance()
+        upload.login()
+        upload.setFolder(self.folder['id'])
+        file = upload.uploadFile(self.confirmPath)
         log.info(file)
         self.__hideConfirm()
         log.info("Confirmed picture")
